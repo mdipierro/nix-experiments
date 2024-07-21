@@ -1,0 +1,48 @@
+####################################################################
+# Nix bolierplate do not edit
+####################################################################
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "io_tweag_rules_nixpkgs",
+    strip_prefix = "rules_nixpkgs-244ae504d3f25534f6d3877ede4ee50e744a5234",
+    urls = ["https://github.com/tweag/rules_nixpkgs/archive/244ae504d3f25534f6d3877ede4ee50e744a5234.tar.gz"],
+)
+
+load("@io_tweag_rules_nixpkgs//nixpkgs:repositories.bzl", "rules_nixpkgs_dependencies")
+rules_nixpkgs_dependencies()
+
+load("@io_tweag_rules_nixpkgs//nixpkgs:nixpkgs.bzl", "nixpkgs_git_repository", "nixpkgs_package", "nixpkgs_cc_configure")
+
+nixpkgs_git_repository(
+    name = "nixpkgs",
+    revision = "24.05",
+)
+
+###################################################################
+# Pick a compiler
+###################################################################
+
+nixpkgs_cc_configure(
+  repository = "@nixpkgs",
+  name = "nixpkgs_config_cc",
+  attribute_path = "gcc11",
+)
+
+###################################################################
+# Pick packages
+###################################################################
+
+nixpkgs_package(
+    name = "eigen",
+    repositories = { "nixpkgs": "@nixpkgs//:default.nix" },
+    build_file_content = """\
+cc_library(
+    name = "eigen",
+    hdrs = glob(["include/**"], allow_empty=False),
+    includes = ["include"],
+    visibility = ["//visibility:public"])
+""",
+)
+
