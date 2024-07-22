@@ -27,7 +27,7 @@ nixpkgs_git_repository(
 nixpkgs_cc_configure(
   repository = "@nixpkgs",
   name = "nixpkgs_config_cc",
-  attribute_path = "gcc11",
+  attribute_path = "clang_13",
 )
 
 ###################################################################
